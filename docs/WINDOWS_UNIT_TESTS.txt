@@ -1,0 +1,35 @@
+Start testing: Nov 25 20:02 Coordinated Universal Time
+----------------------------------------------------------
+1/2 Testing: firewall_plan
+1/2 Test: firewall_plan
+Command: "D:/a/ProxyServer/ProxyServer/build/windows-service-tests/Release/service_firewall_tests.exe"
+Directory: D:/a/ProxyServer/ProxyServer/build/windows-service-tests
+"firewall_plan" start time: Nov 25 20:02 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+service firewall plan: 94 assertions passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"firewall_plan" end time: Nov 25 20:02 Coordinated Universal Time
+"firewall_plan" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/2 Testing: service_codec
+2/2 Test: service_codec
+Command: "D:/a/ProxyServer/ProxyServer/build/windows-service-tests/Release/service_codec_tests.exe"
+Directory: D:/a/ProxyServer/ProxyServer/build/windows-service-tests
+"service_codec" start time: Nov 25 20:02 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+PASS service codec: 1078 assertions; bounded round trips, malformed input and secret clearing
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"service_codec" end time: Nov 25 20:02 Coordinated Universal Time
+"service_codec" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 25 20:02 Coordinated Universal Time

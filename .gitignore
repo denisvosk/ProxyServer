@@ -26,4 +26,6 @@
 # Tool output from a particular workstation
 /docs/WINDOWS_BUILD_LOG.txt
 /docs/WINDOWS_BUILD.json
+/docs/MINGW_BUILD.json
+/docs/MINGW_BUILD_LOG.txt
 /SHA256SUMS.txt

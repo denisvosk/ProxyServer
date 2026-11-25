@@ -1,0 +1,36 @@
+{
+  "run_id": 45690591020,
+  "run_url": "https://github.com/denisvosk/ProxyServer/actions/runs/45690591020",
+  "commit": "73e9be77bad71328630b83896754cb9664c23518",
+  "conclusion": "success",
+  "integration_groups_passed": 10,
+  "compiler": "MSVC 19.44.35230.0",
+  "windows_sdk": "10.0.26100.0",
+  "os": "Windows Server 2022 10.0.20348",
+  "gui_warnings": 0,
+  "gui_errors": 0,
+  "delivered_gui_is_exact_tested_binary": true,
+  "ci_binary_sha256": {
+    "ProxyServer.exe": "4adfd14e44839e96ce1fdca8f678b35f6393a2e0cc4e8e7784be02c51ed0792f",
+    "components/gost.exe": "c5bad285f0a0cbaddea5c4d3ac41aa43e7eeefd50eeac275de1a71233713ee08",
+    "components/mtg.exe": "95cc28e6341a73b4802a4e71ae6baa5b6cf3055df6c22d625906aee64600e524",
+    "components/proxy-cert.exe": "10cbd5dfd0da3322e3e11bb09cfd5b9047ca00ebbdefc3ce167619a836545d7e"
+  },
+  "delivered_components_sha256": {
+    "components/mtg.exe": "607738eef7f34b1122ed6bff74f25175ea4ce0023801188d71c1b73a80de3491",
+    "components/gost.exe": "3b7d5a1f3a4e0d072ffef630d49cfa8c049b3997bb20ff92118a42bb1f622525",
+    "components/proxy-cert.exe": "c139da59ca406d6b18a517c7937f32b730733e0fd73e06e10a0add041d3085af"
+  },
+  "component_binaries_identical_to_ci": {
+    "components/mtg.exe": false,
+    "components/gost.exe": false,
+    "components/proxy-cert.exe": false
+  },
+  "component_note": "The delivery preserves the working 2.0 component EXEs. Native CI rebuilt the same component source with its Windows Go toolchain; component binary hashes differ. The delivered GUI/service host is the exact executable exercised by CI.",
+  "not_tested": [
+    "Windows 10 VDS itself",
+    "Actual OS reboot or user logoff",
+    "External Telegram client",
+    "Exact original component EXEs in the new Windows service test"
+  ]
+}

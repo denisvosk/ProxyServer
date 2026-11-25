@@ -1,0 +1,18 @@
+PASS 1: protected install, actual production EXE service host, stopped SCM state, DPAPI storage and ACLs
+FIREWALL_REMOTE_SCOPE: 127.0.0.1/255.255.255.255
+FIREWALL_REMOTE_SCOPE: 127.0.0.1/255.255.255.255
+FIREWALL_REMOTE_SCOPE: 127.0.0.1/255.255.255.255
+FIREWALL_REMOTE_SCOPE: 127.0.0.1/255.255.255.255
+FIREWALL_REMOTE_SCOPE: 127.0.0.1/255.255.255.255
+FIREWALL_REMOTE_SCOPE: 127.0.0.1/255.255.255.255
+PASS 2: real firewall COM apply, identical reapply, update and owned cleanup preserve all existing profiles/rules
+PASS 3: SCM startup with both engines disabled and exact secret roundtrip
+PASS 4: independent proxy/MT saves preserve the other page and credentials
+PASS 5: real GOST SOCKS5/HTTP authentication and loopback payload transfer on Windows
+SCREENSHOT_SAVED: windows-service-ui.png
+PASS 6: real GUI opens and exits while the Windows service and proxy remain alive
+PASS 7: owned GOST crash triggers bounded service recovery
+PASS 8: explicit stop cancels pending recovery and releases processes/ports
+PASS 9: fresh SCM process startup honors persisted boot flags and protected profile
+PASS 10: uninstall stops owned resources and retains protected data
+WINDOWS_SERVICE_INTEGRATION_PASSED groups=10
