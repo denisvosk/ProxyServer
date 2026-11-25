@@ -1,0 +1,71 @@
+{
+  "services": [
+    {
+      "name": "local-socks-tcp",
+      "addr": "127.0.0.1:1088",
+      "handler": {
+        "type": "socks5",
+        "chain": "vds-tls",
+        "metadata": {
+          "udp": false,
+          "notls": true
+        }
+      },
+      "listener": {
+        "type": "tcp"
+      }
+    },
+    {
+      "name": "local-http",
+      "addr": "127.0.0.1:8088",
+      "handler": {
+        "type": "http",
+        "chain": "vds-tls"
+      },
+      "listener": {
+        "type": "tcp"
+      }
+    }
+  ],
+  "chains": [
+    {
+      "name": "vds-tls",
+      "hops": [
+        {
+          "name": "vds",
+          "nodes": [
+            {
+              "name": "vds-socks-tls",
+              "addr": "YOUR_VDS_IP_OR_DOMAIN:1443",
+              "connector": {
+                "type": "socks5",
+                "auth": {
+                  "username": "YOUR_SERVER_USER",
+                  "password": "YOUR_SERVER_PASSWORD"
+                },
+                "metadata": {
+                  "notls": true
+                }
+              },
+              "dialer": {
+                "type": "tls",
+                "tls": {
+                  "secure": true,
+                  "serverName": "YOUR_CERTIFICATE_IP_OR_DOMAIN",
+                  "caFile": "C:\\ProxyClient\\server-cert.pem",
+                  "options": {
+                    "minVersion": "VersionTLS12"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "log": {
+    "level": "warn",
+    "output": "stderr"
+  }
+}

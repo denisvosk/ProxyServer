@@ -1,0 +1,113 @@
+package config
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+
+	"github.com/pelletier/go-toml/v2"
+)
+
+type tomlConfig struct {
+	Debug                       bool   `toml:"debug" json:"debug,omitempty"`
+	AllowFallbackOnUnknownDC    bool   `toml:"allow-fallback-on-unknown-dc" json:"allowFallbackOnUnknownDc,omitempty"`
+	Secret                      string `toml:"secret" json:"secret"`
+	BindTo                      string `toml:"bind-to" json:"bindTo"`
+	ProxyProtocolListener       bool   `toml:"proxy-protocol-listener" json:"proxyProtocolListener"`
+	PreferIP                    string `toml:"prefer-ip" json:"preferIp,omitempty"`
+	AutoUpdate                  bool   `toml:"auto-update" json:"autoUpdate,omitempty"`
+	DomainFrontingPort          uint   `toml:"domain-fronting-port" json:"domainFrontingPort,omitempty"`
+	DomainFrontingIP            string `toml:"domain-fronting-ip" json:"domainFrontingIp,omitempty"`
+	DomainFrontingProxyProtocol bool   `toml:"domain-fronting-proxy-protocol" json:"domainFrontingProxyProtocol,omitempty"`
+	TolerateTimeSkewness        string `toml:"tolerate-time-skewness" json:"tolerateTimeSkewness,omitempty"`
+	Concurrency                 uint   `toml:"concurrency" json:"concurrency,omitempty"`
+	PublicIPv4                  string `toml:"public-ipv4" json:"publicIpv4,omitempty"`
+	PublicIPv6                  string `toml:"public-ipv6" json:"publicIpv6,omitempty"`
+	DomainFronting              struct {
+		Host          string `toml:"host" json:"host,omitempty"`
+		IP            string `toml:"ip" json:"ip,omitempty"`
+		Port          uint   `toml:"port" json:"port,omitempty"`
+		ProxyProtocol bool   `toml:"proxy-protocol" json:"proxyProtocol,omitempty"`
+	} `toml:"domain-fronting" json:"domainFronting,omitempty"`
+	Defense struct {
+		AntiReplay struct {
+			Enabled   bool    `toml:"enabled" json:"enabled,omitempty"`
+			MaxSize   string  `toml:"max-size" json:"maxSize,omitempty"`
+			ErrorRate float64 `toml:"error-rate" json:"errorRate,omitempty"`
+		} `toml:"anti-replay" json:"antiReplay,omitempty"`
+		Blocklist struct {
+			Enabled             bool     `toml:"enabled" json:"enabled,omitempty"`
+			DownloadConcurrency uint     `toml:"download-concurrency" json:"downloadConcurrency,omitempty"`
+			URLs                []string `toml:"urls" json:"urls,omitempty"`
+			UpdateEach          string   `toml:"update-each" json:"updateEach,omitempty"`
+		} `toml:"blocklist" json:"blocklist,omitempty"`
+		Allowlist struct {
+			Enabled             bool     `toml:"enabled" json:"enabled,omitempty"`
+			DownloadConcurrency uint     `toml:"download-concurrency" json:"downloadConcurrency,omitempty"`
+			URLs                []string `toml:"urls" json:"urls,omitempty"`
+			UpdateEach          string   `toml:"update-each" json:"updateEach,omitempty"`
+		} `toml:"allowlist" json:"allowlist,omitempty"`
+		Doppelganger struct {
+			URLs       []string `toml:"urls" json:"urls,omitempty"`
+			Repeats    uint     `toml:"repeats-per-raid" json:"repeats_per_raid,omitempty"`
+			UpdateEach string   `toml:"raid-each" json:"raid_each,omitempty"`
+			DRS        bool     `toml:"drs" json:"drs,omitempty"`
+		} `toml:"doppelganger" json:"doppelganger,omitempty"`
+	} `toml:"defense" json:"defense,omitempty"`
+	Network struct {
+		Timeout struct {
+			TCP       string `toml:"tcp" json:"tcp,omitempty"`
+			HTTP      string `toml:"http" json:"http,omitempty"`
+			Idle      string `toml:"idle" json:"idle,omitempty"`
+			Handshake string `toml:"handshake" json:"handshake,omitempty"`
+		} `toml:"timeout" json:"timeout,omitempty"`
+		KeepAlive struct {
+			Disabled bool   `toml:"disabled" json:"disabled,omitempty"`
+			Idle     string `toml:"idle" json:"idle,omitempty"`
+			Interval string `toml:"interval" json:"interval,omitempty"`
+			Count    uint   `toml:"count" json:"count,omitempty"`
+		} `toml:"keep-alive" json:"keepAlive,omitempty"`
+		DOHIP           string   `toml:"doh-ip" json:"dohIp,omitempty"`
+		DNS             string   `toml:"dns" json:"dns,omitempty"`
+		Proxies         []string `toml:"proxies" json:"proxies,omitempty"`
+		TCPNotSentLowat string   `toml:"tcp-not-sent-lowat" json:"tcpNotSentLowat,omitempty"`
+	} `toml:"network" json:"network,omitempty"`
+	Stats struct {
+		StatsD struct {
+			Enabled      bool   `toml:"enabled" json:"enabled,omitempty"`
+			Address      string `toml:"address" json:"address,omitempty"`
+			MetricPrefix string `toml:"metric-prefix" json:"metricPrefix,omitempty"`
+			TagFormat    string `toml:"tag-format" json:"tagFormat,omitempty"`
+		} `toml:"statsd" json:"statsd,omitempty"`
+		Prometheus struct {
+			Enabled      bool   `toml:"enabled" json:"enabled,omitempty"`
+			BindTo       string `toml:"bind-to" json:"bindTo,omitempty"`
+			HTTPPath     string `toml:"http-path" json:"httpPath,omitempty"`
+			MetricPrefix string `toml:"metric-prefix" json:"metricPrefix,omitempty"`
+		} `toml:"prometheus" json:"prometheus,omitempty"`
+	} `toml:"stats" json:"stats,omitempty"`
+}
+
+func Parse(rawData []byte) (*Config, error) {
+	tomlConf := &tomlConfig{}
+	jsonBuf := &bytes.Buffer{}
+	conf := &Config{}
+
+	jsonEncoder := json.NewEncoder(jsonBuf)
+	jsonEncoder.SetEscapeHTML(false)
+	jsonEncoder.SetIndent("", "")
+
+	if err := toml.Unmarshal(rawData, tomlConf); err != nil {
+		return nil, fmt.Errorf("cannot parse toml config: %w", err)
+	}
+
+	if err := jsonEncoder.Encode(tomlConf); err != nil {
+		panic(err)
+	}
+
+	if err := json.NewDecoder(jsonBuf).Decode(conf); err != nil {
+		return nil, fmt.Errorf("cannot parse a config: %w", err)
+	}
+
+	return conf, nil
+}

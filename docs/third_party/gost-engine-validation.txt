@@ -1,0 +1,7 @@
+GOST 3.3.3-desktop.1 validation
+Go 1.26.11, Linux/amd64.
+PASS: go test ./handler/http ./resolver/exchanger
+Includes upstream package suites plus desktop HTTP hop-header and encrypted DNS regressions.
+PASS: go build ./cmd/gost for Linux/amd64 and Windows/amd64, CGO disabled.
+Windows execution was not available; Wine IPC is prohibited by the environment.
+See docs/VERIFICATION.md for controller/configuration and engine integration tests.

@@ -1,0 +1,6 @@
+Firewall helper validation
+PowerShell 7.4.6, Linux/amd64; full UTF-16LE/BOM INI fixture matching the GUI schema.
+PASS: 129 assertions covering syntax, elevation/ShouldProcess guards, enabled TCP port selection, loopback-only DNS exclusion, UDP ranges/protocol capability, exact source IPv4, profiles, explicit MTProto selection, deterministic rule identity, malformed/missing/duplicate config rejection and UTF-8 hex username/legacy username handling.
+No NetSecurity module or real firewall command was invoked.
+Windows PowerShell 5.1 and Windows Firewall runtime behavior remain unexecuted in this build environment.
+Run tests/test_firewall_plan.ps1 to repeat the portable parsing/planning checks.

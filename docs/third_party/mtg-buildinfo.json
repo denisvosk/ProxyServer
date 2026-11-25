@@ -1,0 +1,194 @@
+{
+  "GoVersion": "go1.26.11",
+  "Path": "github.com/9seconds/mtg/v2",
+  "Main": {
+    "Path": "github.com/9seconds/mtg/v2",
+    "Version": "(devel)"
+  },
+  "Deps": [
+    {
+      "Path": "github.com/OneOfOne/xxhash",
+      "Version": "v1.2.8",
+      "Sum": "h1:31czK/TI9sNkxIKfaUfGlU47BAxQ0ztGgd9vPyqimf8="
+    },
+    {
+      "Path": "github.com/alecthomas/kong",
+      "Version": "v1.15.0",
+      "Sum": "h1:BVJstKbpO73zKpmIu+m/aLRrNmWwxXPIGTNin9VmLVI="
+    },
+    {
+      "Path": "github.com/alecthomas/units",
+      "Version": "v0.0.0-20240927000941-0f3dac36c52b",
+      "Sum": "h1:mimo19zliBX/vSQ6PWWSL9lK8qwHozUj03+zLoEB8O0="
+    },
+    {
+      "Path": "github.com/babolivier/go-doh-client",
+      "Version": "v0.0.0-20201028162107-a76cff4cb8b6",
+      "Sum": "h1:4NNbNM2Iq/k57qEu7WfL67UrbPq1uFWxW4qODCohi+0="
+    },
+    {
+      "Path": "github.com/beevik/ntp",
+      "Version": "v1.5.0",
+      "Sum": "h1:y+uj/JjNwlY2JahivxYvtmv4ehfi3h74fAuABB9ZSM4="
+    },
+    {
+      "Path": "github.com/beorn7/perks",
+      "Version": "v1.0.1",
+      "Sum": "h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM="
+    },
+    {
+      "Path": "github.com/cespare/xxhash/v2",
+      "Version": "v2.3.0",
+      "Sum": "h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs="
+    },
+    {
+      "Path": "github.com/mattn/go-colorable",
+      "Version": "v0.1.14",
+      "Sum": "h1:9A9LHSqF/7dyVVX6g0U9cwm9pG3kP9gSzcuIPHPsaIE="
+    },
+    {
+      "Path": "github.com/mattn/go-isatty",
+      "Version": "v0.0.20",
+      "Sum": "h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY="
+    },
+    {
+      "Path": "github.com/munnerz/goautoneg",
+      "Version": "v0.0.0-20191010083416-a7dc8b61c822",
+      "Sum": "h1:C3w9PqII01/Oq1c1nUAm88MOHcQC9l5mIlSMApZMrHA="
+    },
+    {
+      "Path": "github.com/ncruces/go-dns",
+      "Version": "v1.3.3",
+      "Sum": "h1:59OV7XoJrTCoUMZjWRVs4GOjtntMTZqiQ5Mn+BT13hk="
+    },
+    {
+      "Path": "github.com/panjf2000/ants/v2",
+      "Version": "v2.12.0",
+      "Sum": "h1:u9JhESo83i/GkZnhfTNuFMMWcNt7mnV1bGJ6FT4wXH8="
+    },
+    {
+      "Path": "github.com/patrickmn/go-cache",
+      "Version": "v2.1.0+incompatible",
+      "Sum": "h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc="
+    },
+    {
+      "Path": "github.com/pelletier/go-toml/v2",
+      "Version": "v2.3.0",
+      "Sum": "h1:k59bC/lIZREW0/iVaQR8nDHxVq8OVlIzYCOJf421CaM="
+    },
+    {
+      "Path": "github.com/pires/go-proxyproto",
+      "Version": "v0.11.0",
+      "Sum": "h1:gUQpS85X/VJMdUsYyEgyn59uLJvGqPhJV5YvG68wXH4="
+    },
+    {
+      "Path": "github.com/prometheus/client_golang",
+      "Version": "v1.23.2",
+      "Sum": "h1:Je96obch5RDVy3FDMndoUsjAhG5Edi49h0RJWRi/o0o="
+    },
+    {
+      "Path": "github.com/prometheus/client_model",
+      "Version": "v0.6.2",
+      "Sum": "h1:oBsgwpGs7iVziMvrGhE53c/GrLUsZdHnqNwqPLxwZyk="
+    },
+    {
+      "Path": "github.com/prometheus/common",
+      "Version": "v0.67.5",
+      "Sum": "h1:pIgK94WWlQt1WLwAC5j2ynLaBRDiinoAb86HZHTUGI4="
+    },
+    {
+      "Path": "github.com/rs/zerolog",
+      "Version": "v1.35.0",
+      "Sum": "h1:VD0ykx7HMiMJytqINBsKcbLS+BJ4WYjz+05us+LRTdI="
+    },
+    {
+      "Path": "github.com/smira/go-statsd",
+      "Version": "v1.3.4",
+      "Sum": "h1:kBYWcLSGT+qC6JVbvfz48kX7mQys32fjDOPrfmsSx2c="
+    },
+    {
+      "Path": "github.com/txthinking/runnergroup",
+      "Version": "v0.0.0-20250224021307-5864ffeb65ae",
+      "Sum": "h1:ArVM1jICfm7g4E4dBet+KHUFMLuxmj1Nxdp/tr3ByCU="
+    },
+    {
+      "Path": "github.com/txthinking/socks5",
+      "Version": "v0.0.0-20251011041537-5c31f201a10e",
+      "Sum": "h1:xA7GVlbz6teIF4FdvuqwbX6C4tiqNk2PH7FRPIDerao="
+    },
+    {
+      "Path": "github.com/tylertreat/BoomFilters",
+      "Version": "v0.0.0-20251117164519-53813c36cc1b",
+      "Sum": "h1:p+bJ3v5uUdEVMCoeFUs+BNJPsqt+Y6BLbDaPfTcbcH8="
+    },
+    {
+      "Path": "github.com/yl2chen/cidranger",
+      "Version": "v1.0.2",
+      "Sum": "h1:lbOWZVCG1tCRX4u24kuM1Tb4nHqWkDxwLdoS+SevawU="
+    },
+    {
+      "Path": "go.yaml.in/yaml/v2",
+      "Version": "v2.4.4",
+      "Sum": "h1:tuyd0P+2Ont/d6e2rl3be67goVK4R6deVxCUX5vyPaQ="
+    },
+    {
+      "Path": "golang.org/x/crypto",
+      "Version": "v0.49.0",
+      "Sum": "h1:+Ng2ULVvLHnJ/ZFEq4KdcDd/cfjrrjjNSXNzxg0Y4U4="
+    },
+    {
+      "Path": "golang.org/x/net",
+      "Version": "v0.52.0",
+      "Sum": "h1:He/TN1l0e4mmR3QqHMT2Xab3Aj3L9qjbhRm78/6jrW0="
+    },
+    {
+      "Path": "golang.org/x/sync",
+      "Version": "v0.20.0",
+      "Sum": "h1:e0PTpb7pjO8GAtTs2dQ6jYa5BWYlMuX047Dco/pItO4="
+    },
+    {
+      "Path": "golang.org/x/sys",
+      "Version": "v0.42.0",
+      "Sum": "h1:omrd2nAlyT5ESRdCLYdm3+fMfNFE/+Rf4bDIQImRJeo="
+    },
+    {
+      "Path": "google.golang.org/protobuf",
+      "Version": "v1.36.11",
+      "Sum": "h1:fV6ZwhNocDyBLK0dj+fg8ektcVegBBuEolpbTQyBNVE="
+    }
+  ],
+  "Settings": [
+    {
+      "Key": "-buildmode",
+      "Value": "exe"
+    },
+    {
+      "Key": "-compiler",
+      "Value": "gc"
+    },
+    {
+      "Key": "-pgo",
+      "Value": "default.pgo"
+    },
+    {
+      "Key": "-trimpath",
+      "Value": "true"
+    },
+    {
+      "Key": "CGO_ENABLED",
+      "Value": "0"
+    },
+    {
+      "Key": "GOAMD64",
+      "Value": "v1"
+    },
+    {
+      "Key": "GOARCH",
+      "Value": "amd64"
+    },
+    {
+      "Key": "GOOS",
+      "Value": "windows"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ <ItemGroup>
+  <Filter Include="Source"><UniqueIdentifier>{23530D7C-BB90-4586-9F97-10357B44EF28}</UniqueIdentifier></Filter>
+  <Filter Include="Headers"><UniqueIdentifier>{B0D94D96-C36D-4D69-9EC1-DAE888C553B9}</UniqueIdentifier></Filter>
+  <Filter Include="Resources"><UniqueIdentifier>{309B4440-36EB-4E25-A4C0-C89F07BDCF90}</UniqueIdentifier></Filter>
+ </ItemGroup>
+ <ItemGroup>
+  <ClCompile Include="src\main_win.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\gost_config.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\proxy_backend_win.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\child_process_win.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\mtproto_win.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\service_host_win.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\service_codec.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\service_firewall_plan.cpp"><Filter>Source</Filter></ClCompile>
+  <ClCompile Include="src\service_firewall_win.cpp"><Filter>Source</Filter></ClCompile>
+ </ItemGroup>
+ <ItemGroup>
+  <ClInclude Include="src\proxy_core.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="src\gost_config.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="src\child_process_win.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="src\mtproto_win.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="src\service_host.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="src\service_codec.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="src\service_firewall.h"><Filter>Headers</Filter></ClInclude>
+  <ClInclude Include="resources\resource.h"><Filter>Resources</Filter></ClInclude>
+ </ItemGroup>
+ <ItemGroup><ResourceCompile Include="resources\app.rc"><Filter>Resources</Filter></ResourceCompile></ItemGroup>
+ <ItemGroup><Image Include="resources\app.ico"><Filter>Resources</Filter></Image></ItemGroup>
+ <ItemGroup><None Include="resources\app.manifest"><Filter>Resources</Filter></None></ItemGroup>
+</Project>

@@ -1,0 +1,46 @@
+PASS SOCKS5 authenticated TCP and 1 MiB integrity
+PASS SOCKS5 rejects incorrect password
+PASS SOCKS5 refuses anonymous authentication
+PASS HTTP CONNECT authenticated byte tunnel
+PASS HTTP CONNECT challenges missing credentials
+PASS HTTP CONNECT rejects incorrect credentials
+PASS HTTP absolute URI forwarding strips proxy and hop headers
+PASS HTTP chunked POST passes intact
+PASS HTTPS destination through HTTP CONNECT verifies origin TLS
+PASS SOCKS5 UDP ASSOCIATE relays datagrams in configured range
+PASS DNS query and reply through SOCKS5 UDP
+PASS UDP association rejects another source IP
+PASS Real metrics require independent authentication and omit secrets
+PASS Exact allowIp permits authenticated SOCKS and HTTP from matching IPv4
+PASS Exact allowIp rejects another IPv4 for SOCKS and HTTP
+PASS Shared connection cap spans SOCKS and HTTP and recovers after close
+PASS Occupied listener causes startup failure
+PASS SOCKS destination DNS via udp
+PASS SOCKS UDP destination DNS via udp
+PASS Local DNS UDP and TCP via udp
+PASS SOCKS destination DNS via tcp
+PASS SOCKS UDP destination DNS via tcp
+PASS Local DNS UDP and TCP via tcp
+PASS HTTPS proxy outer TLS with trusted SAN certificate
+PASS SOCKS5 over outer TLS with authenticated connection
+PASS Client rejects untrusted proxy TLS certificate
+PASS SOCKS TLS control plus standard UDP relay
+PASS Chained SOCKS TCP through socks5 with remote DNS
+PASS Chained HTTP CONNECT through socks5 with separate upstream credentials
+PASS Direct ports remain independent of socks5 chain
+PASS HTTPS proxy TLS routes through socks5 upstream
+PASS Standard UDP ASSOCIATE through SOCKS upstream
+PASS No direct fallback after socks5 upstream failure
+PASS Chained SOCKS TCP through http with remote DNS
+PASS Chained HTTP CONNECT through http with separate upstream credentials
+PASS Direct ports remain independent of http chain
+PASS HTTPS proxy TLS routes through http upstream
+PASS HTTP upstream refuses unsupported UDP
+PASS No direct fallback after http upstream failure
+PASS Verified tls DNS resolves through trusted test CA
+PASS Untrusted tls DNS certificate fails closed
+PASS Verified https DNS resolves through trusted test CA
+PASS Untrusted https DNS certificate fails closed
+PASS Validation rejects port conflicts, weak format, invalid DNS/TLS/chain/range
+PASS All owned engine processes exit and listener ports can be reused
+RESULT: 45 functional groups passed. No external endpoints used.

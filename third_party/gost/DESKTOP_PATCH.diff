@@ -1,0 +1,9 @@
+--- a/go.mod
++++ b/go.mod
+@@ -172,3 +172,6 @@
+ 	gopkg.in/yaml.v3 v3.0.1 // indirect
+ 	gvisor.dev/gvisor v0.0.0-20250523182742-eede7a881b20 // indirect
+ )
++
++// Desktop release: verified encrypted DNS defaults, see ../gost-x/DESKTOP_PATCH.diff.
++replace github.com/go-gost/x => ../gost-x

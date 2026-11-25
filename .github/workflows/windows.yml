@@ -1,0 +1,77 @@
+name: Windows build and service integration
+
+on:
+  push:
+    branches: [main, service-2.1]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    env:
+      GOTOOLCHAIN: local
+      CGO_ENABLED: '0'
+      GOAMD64: v1
+      ENABLE_PROXY_SERVICE_TESTS: '1'
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install pinned Go toolchain
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: '1.26.11'
+          cache-dependency-path: |
+            third_party/gost/go.sum
+            third_party/gost-x/go.sum
+            third_party/mtg/go.sum
+      - name: Locate MSBuild
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
+        with:
+          msbuild-architecture: x64
+      - name: Rebuild bundled components from pinned source
+        shell: cmd
+        run: Rebuild-Components.cmd
+      - name: Build native GUI with MSVC and static CRT
+        run: |
+          msbuild ProxyServer.sln /m /t:Build /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /nologo /bl:windows-build.binlog
+          if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed.' }
+      - name: Run Windows service and real GUI lifecycle integration
+        run: ./tests/Run-ServiceTests.ps1
+      - name: Write binary hashes
+        run: |
+          Get-FileHash -Algorithm SHA256 ./bin/x64/Release/ProxyServer.exe, ./components/gost.exe, ./components/mtg.exe, ./components/proxy-cert.exe | Format-List | Out-File -Encoding utf8 windows-binary-hashes.txt
+      - name: Upload build and test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: windows-build-test-evidence
+          path: |
+            windows-build.binlog
+            windows-service-integration.log
+            windows-binary-hashes.txt
+            windows-service-ui.png
+            build/windows-service-tests/Testing/Temporary/LastTest.log
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload Windows binaries after successful integration
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ProxyServer-2.1-Windows-x64-tested
+          path: |
+            bin/x64/Release/ProxyServer.exe
+            bin/x64/Release/components/*.exe
+          if-no-files-found: error
+          retention-days: 14

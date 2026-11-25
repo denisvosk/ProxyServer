@@ -1,0 +1,5 @@
+PASS patched MTG stdin TOML startup
+PASS no secret in stdout/stderr
+PASS child termination closes listener
+PASS 64 KiB config cap
+Linux engine tests only. No Telegram client/account traffic used.

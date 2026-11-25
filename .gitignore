@@ -1,0 +1,29 @@
+# Local user configuration and credentials
+/proxy.ini
+/*.log
+/*.log.*
+/certificates/
+/certs/
+/logs/
+/data/
+*.user
+*.suo
+.vs/
+
+# Reproducible build products; ready distributions are supplied separately.
+/ProxyServer.exe
+/components/*.exe
+/bin/
+/build/
+/artifacts/
+*.obj
+*.o
+*.pdb
+*.ilk
+*.res
+*.building.exe
+
+# Tool output from a particular workstation
+/docs/WINDOWS_BUILD_LOG.txt
+/docs/WINDOWS_BUILD.json
+/SHA256SUMS.txt

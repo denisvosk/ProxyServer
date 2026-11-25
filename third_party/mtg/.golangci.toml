@@ -1,0 +1,21 @@
+# https://golangci-lint.run/docs/configuration/file/
+
+version = '2'
+
+[run]
+concurrency = 4
+tests = true
+
+# [linters]
+# enable-all = true
+# disable = [
+#     "containedctx",
+#     "exhaustivestruct",
+#     "exhaustruct",
+#     "gas",
+#     "gochecknoglobals",
+#     "goerr113",
+#     "ireturn",
+#     "thelper",
+#     "varnamelen",
+# ]

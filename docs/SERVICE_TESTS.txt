@@ -1,0 +1,9 @@
+Proxy Server 2.1 portable checks on Linux; Windows runtime is recorded separately.
+
+test_service_codec_root
+PASS service codec: 1078 assertions; bounded round trips, malformed input and secret clearing
+exit_code=0
+
+test_service_firewall
+service firewall plan: 76 assertions passed
+exit_code=0

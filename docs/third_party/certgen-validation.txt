@@ -1,0 +1,8 @@
+Proxy certificate helper validation
+Go 1.26.11, standard library only.
+PASS: IPv4, IPv6 and DNS SAN hostname verification; key/certificate agreement; P-256 curve; 1-year validity; non-CA/server-auth constraints.
+PASS: unknown root and wrong hostname rejection; no overwrite and original key preservation.
+PASS: malformed/wildcard/path/URL/port/unspecified/multicast host rejection before output creation.
+PASS: Linux directory 0700 and PEM files 0600.
+PASS: Linux/amd64 and Windows/amd64 cross compilation, CGO disabled.
+Windows ACL behavior is implemented with CreateDirectory plus protected current-user/LocalSystem DACL before key writing, but not executed in this environment.

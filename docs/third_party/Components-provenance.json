@@ -1,0 +1,48 @@
+{
+  "gost": {
+    "version": "3.3.3-desktop.1",
+    "source_commit": "3d514c57230bfa524aa89087da5580b314f1cd36",
+    "binary_origin": "cross-compiled pinned tagged source plus documented local go-gost/x encrypted-DNS and HTTP hop-header patches",
+    "release_url": "https://github.com/go-gost/gost/releases/tag/v3.3.3",
+    "executable_sha256": "3b7d5a1f3a4e0d072ffef630d49cfa8c049b3997bb20ff92118a42bb1f622525",
+    "size_bytes": 49139200,
+    "upstream_version": "3.3.3",
+    "go_toolchain": "go1.26.11 linux/amd64",
+    "go_toolchain_archive_sha256": "9849f4e04ee35303714e34fbc3ac8ab44ea3e448a95aa182f91e3b9b79c710ec",
+    "original_archive_sha256": "b00441624a66ebed94a2ddcc01ab2832069f053e6ca0abf19d7104b84fad1f78",
+    "runtime_library": {
+      "module": "github.com/go-gost/x",
+      "version": "v0.28.1",
+      "source_commit": "006b432a7d0472d49ec3ca77a37a133c71e8c0f3",
+      "local_path": "third_party/gost-x",
+      "patch": "third_party/gost-x/DESKTOP_PATCH.diff"
+    },
+    "target": "windows/amd64, GOAMD64=v1, CGO_ENABLED=0",
+    "windows_runtime_tested": false
+  },
+  "mtg": {
+    "version": "2.3.0-desktop.1",
+    "upstream_version": "2.3.0",
+    "source_commit": "5899a2f5b3bda263a885c3da450388a198f67cda",
+    "binary_origin": "cross-compiled tagged source plus documented stdin/diagnostic-only CLI patch",
+    "go_toolchain": "go1.26.11 linux/amd64",
+    "go_toolchain_archive_sha256": "9849f4e04ee35303714e34fbc3ac8ab44ea3e448a95aa182f91e3b9b79c710ec",
+    "original_archive_sha256": "9659729d9d454e07c0bab0e02d4a8b3208d26216b02a3035bd02acfe8f733129",
+    "release_url": "https://github.com/9seconds/mtg/releases/tag/v2.3.0",
+    "executable_sha256": "607738eef7f34b1122ed6bff74f25175ea4ce0023801188d71c1b73a80de3491",
+    "size_bytes": 13928448,
+    "target": "windows/amd64, GOAMD64=v1, CGO_ENABLED=0",
+    "windows_runtime_tested": false
+  },
+  "proxy-cert": {
+    "version": "2.0 project helper",
+    "source": "tools/certgen",
+    "binary_origin": "project source, Go standard library only",
+    "go_toolchain": "go1.26.11 linux/amd64",
+    "go_toolchain_archive_sha256": "9849f4e04ee35303714e34fbc3ac8ab44ea3e448a95aa182f91e3b9b79c710ec",
+    "executable_sha256": "c139da59ca406d6b18a517c7937f32b730733e0fd73e06e10a0add041d3085af",
+    "size_bytes": 3429376,
+    "target": "windows/amd64, GOAMD64=v1, CGO_ENABLED=0",
+    "windows_runtime_tested": false
+  }
+}

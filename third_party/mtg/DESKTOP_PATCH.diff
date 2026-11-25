@@ -1,0 +1,130 @@
+--- a/internal/utils/read_config.go
++++ b/internal/utils/read_config.go
+@@ -2,13 +2,24 @@
+ 
+ import (
+ 	"fmt"
++	"io"
+ 	"os"
+ 
+ 	"github.com/9seconds/mtg/v2/internal/config"
+ )
+ 
+ func ReadConfig(path string) (*config.Config, error) {
+-	content, err := os.ReadFile(path)
++	var content []byte
++	var err error
++	if path == "-" {
++		const maxStdinConfig = 64 * 1024
++		content, err = io.ReadAll(io.LimitReader(os.Stdin, maxStdinConfig+1))
++		if len(content) > maxStdinConfig {
++			return nil, fmt.Errorf("stdin config exceeds 64 KiB")
++		}
++	} else {
++		content, err = os.ReadFile(path)
++	}
+ 	if err != nil {
+ 		return nil, fmt.Errorf("cannot read config file: %w", err)
+ 	}
+--- a/internal/cli/run.go
++++ b/internal/cli/run.go
+@@ -7,7 +7,8 @@
+ )
+ 
+ type Run struct {
+-	ConfigPath string `kong:"arg,required,type='existingfile',help='Path to the configuration file.',name='config-path'"` //nolint: lll
++	ConfigPath        string `kong:"arg,required,help='Path to the configuration file, or - for stdin.',name='config-path'"` //nolint: lll
++	SkipStartupChecks bool   `kong:"name='skip-startup-checks',help='Skip optional public-IP/SNI startup diagnostics.'"`
+ }
+ 
+ func (r *Run) Run(cli *CLI, version string) error {
+@@ -16,5 +17,5 @@
+ 		return fmt.Errorf("cannot init config: %w", err)
+ 	}
+ 
+-	return runProxy(conf, version)
++	return runProxy(conf, version, r.SkipStartupChecks)
+ }
+--- a/internal/cli/run_proxy.go
++++ b/internal/cli/run_proxy.go
+@@ -254,7 +254,7 @@
+ 	}
+ }
+ 
+-func runProxy(conf *config.Config, version string) error { //nolint: funlen, cyclop
++func runProxy(conf *config.Config, version string, skipStartupChecks bool) error { //nolint: funlen, cyclop
+ 	logger := makeLogger(conf)
+ 
+ 	logger.BindJSON("configuration", conf.String()).Debug("configuration")
+@@ -271,7 +271,9 @@
+ 		return fmt.Errorf("cannot build network: %w", err)
+ 	}
+ 
+-	warnSNIMismatch(conf, ntw, logger)
++	if !skipStartupChecks {
++		warnSNIMismatch(conf, ntw, logger)
++	}
+ 
+ 	blocklist, err := makeIPBlocklist(
+ 		conf.Defense.Blocklist,
+--- a/internal/cli/simple_run.go
++++ b/internal/cli/simple_run.go
+@@ -105,5 +105,5 @@
+ 		return fmt.Errorf("invalid result configuration: %w", err)
+ 	}
+ 
+-	return runProxy(conf, version)
++	return runProxy(conf, version, false)
+ }
+--- /dev/null
++++ b/internal/utils/read_config_stdin_test.go
+@@ -0,0 +1,49 @@
++package utils_test
++
++import (
++	"os"
++	"strings"
++	"testing"
++
++	"github.com/9seconds/mtg/v2/internal/utils"
++)
++
++// Desktop integration regression: credentials arrive through an inherited pipe,
++// not a command line or a persistent configuration file. Test data is synthetic.
++func TestReadConfigFromStdin(t *testing.T) {
++	valid := "secret = \"ee000102030405060708090a0b0c0d0e0f6578616d706c652e636f6d\"\n" +
++		"bind-to = \"127.0.0.1:12345\"\n"
++	for _, tc := range []struct {
++		name    string
++		content string
++		wantErr bool
++	}{
++		{"valid", valid, false},
++		{"invalid", "not valid TOML", true},
++		{"oversize", valid + strings.Repeat("#", 64*1024), true},
++	} {
++		t.Run(tc.name, func(t *testing.T) {
++			f, err := os.CreateTemp(t.TempDir(), "stdin-config-")
++			if err != nil {
++				t.Fatal(err)
++			}
++			defer f.Close()
++			if _, err := f.WriteString(tc.content); err != nil {
++				t.Fatal(err)
++			}
++			if _, err := f.Seek(0, 0); err != nil {
++				t.Fatal(err)
++			}
++			previous := os.Stdin
++			os.Stdin = f
++			defer func() { os.Stdin = previous }()
++			conf, err := utils.ReadConfig("-")
++			if (err != nil) != tc.wantErr {
++				t.Fatalf("error = %v, want error = %v", err, tc.wantErr)
++			}
++			if !tc.wantErr && conf.Secret.Host != "example.com" {
++				t.Fatalf("unexpected secret hostname")
++			}
++		})
++	}
++}
