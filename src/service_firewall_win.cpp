@@ -93,8 +93,8 @@ bool equalPlan(INetFwRule* rule,const Rule& plan) {
     std::wstring app,ports,local,remote;long protocol=0,profiles=0;VARIANT_BOOL enabled=VARIANT_FALSE,edge=VARIANT_TRUE;
     return getText(rule,&INetFwRule::get_ApplicationName,app)&&samePath(app,plan.application)&&
         getText(rule,&INetFwRule::get_LocalPorts,ports)&&ports==plan.localPorts&&
-        getText(rule,&INetFwRule::get_LocalAddresses,local)&&local==plan.localAddresses&&
-        getText(rule,&INetFwRule::get_RemoteAddresses,remote)&&remote==plan.remoteAddresses&&
+        getText(rule,&INetFwRule::get_LocalAddresses,local)&&equivalentAddressScope(local,plan.localAddresses)&&
+        getText(rule,&INetFwRule::get_RemoteAddresses,remote)&&equivalentAddressScope(remote,plan.remoteAddresses)&&
         SUCCEEDED(rule->get_Protocol(&protocol))&&protocol==plan.protocol&&
         SUCCEEDED(rule->get_Profiles(&profiles))&&profiles==NET_FW_PROFILE2_ALL&&
         SUCCEEDED(rule->get_Enabled(&enabled))&&enabled==VARIANT_TRUE&&

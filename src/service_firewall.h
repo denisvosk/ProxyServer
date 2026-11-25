@@ -18,6 +18,9 @@ struct Rule {
 const wchar_t* groupName();
 const wchar_t* description();
 std::wstring installationPrefix(const std::wstring& installDirectory);
+// COM may return an exact IPv4 host with a /32 or dotted full-host mask.
+// A subnet, range, list or wildcard never compares equal to a single host.
+bool equivalentAddressScope(const std::wstring& actual, const std::wstring& expected);
 bool makePlan(const proxy::Config& proxy, const mtproto::Config& mt,
               const std::wstring& installDirectory, bool includeMTProto,
               std::vector<Rule>& rules, std::string& error);

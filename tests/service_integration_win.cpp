@@ -88,7 +88,9 @@ std::vector<std::wstring> verifyFirewallPlan(INetFwRules* rules,const proxy::Con
         require(samePath(ruleText(actual.value,&INetFwRule::get_ApplicationName),expected.application),"Firewall program scope mismatch");
         require(ruleText(actual.value,&INetFwRule::get_LocalPorts)==expected.localPorts,"Firewall local port normalization mismatch");
         require(ruleText(actual.value,&INetFwRule::get_LocalAddresses)==expected.localAddresses,"Firewall local address normalization mismatch");
-        require(ruleText(actual.value,&INetFwRule::get_RemoteAddresses)==L"127.0.0.1","Firewall client restriction is not exact loopback");
+        const std::wstring remote=ruleText(actual.value,&INetFwRule::get_RemoteAddresses);
+        std::cout<<"FIREWALL_REMOTE_SCOPE: "<<std::string(remote.begin(),remote.end())<<"\n";
+        require(remote==L"127.0.0.1"||remote==L"127.0.0.1/32"||remote==L"127.0.0.1/255.255.255.255","Firewall client restriction is not one exact loopback host: "+std::string(remote.begin(),remote.end()));
         long protocol=0,profiles=0;VARIANT_BOOL enabled=0,edge=0;NET_FW_RULE_DIRECTION direction=NET_FW_RULE_DIR_OUT;NET_FW_ACTION action=NET_FW_ACTION_BLOCK;
         require(SUCCEEDED(actual.value->get_Protocol(&protocol))&&protocol==expected.protocol&&SUCCEEDED(actual.value->get_Profiles(&profiles))&&profiles==NET_FW_PROFILE2_ALL&&SUCCEEDED(actual.value->get_Enabled(&enabled))&&enabled==VARIANT_TRUE&&SUCCEEDED(actual.value->get_EdgeTraversal(&edge))&&edge==VARIANT_FALSE&&SUCCEEDED(actual.value->get_Direction(&direction))&&direction==NET_FW_RULE_DIR_IN&&SUCCEEDED(actual.value->get_Action(&action))&&action==NET_FW_ACTION_ALLOW,"Firewall rule flags mismatch");
         names.push_back(expected.name);
@@ -232,6 +234,34 @@ void protectedAcl(const std::wstring& path){
     for(DWORD i=0;i<dacl->AceCount&&good;++i){void* ace=nullptr;if(!GetAce(dacl,i,&ace)){good=false;break;}ACE_HEADER* header=static_cast<ACE_HEADER*>(ace);if(header->AceType==ACCESS_ALLOWED_ACE_TYPE){auto* allowed=static_cast<ACCESS_ALLOWED_ACE*>(ace);PSID sid=&allowed->SidStart;if(IsWellKnownSid(sid,WinWorldSid)||IsWellKnownSid(sid,WinBuiltinUsersSid)||IsWellKnownSid(sid,WinAuthenticatedUserSid))good=false;}}
     LocalFree(sd);require(good,"Test service directory ACL is not protected from unprivileged broad groups");
 }
+std::string productBytes(const std::wstring& path){
+    Handle file(CreateFileW(path.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT,nullptr));
+    require(file.value!=INVALID_HANDLE_VALUE,"Cannot read product executable for the service gate");
+    BY_HANDLE_FILE_INFORMATION information={};LARGE_INTEGER size={};
+    require(GetFileInformationByHandle(file.value,&information)&&!(information.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT))&&GetFileSizeEx(file.value,&size)&&size.QuadPart>0&&size.QuadPart<=64*1024*1024,"Product executable is not a bounded normal file");
+    std::string bytes(static_cast<std::size_t>(size.QuadPart),'\0');DWORD count=0;
+    require(ReadFile(file.value,&bytes[0],static_cast<DWORD>(bytes.size()),&count,nullptr)&&count==bytes.size(),"Cannot read complete product executable");return bytes;
+}
+void installRealProduct(const std::wstring& directory,const std::wstring& root){
+    const std::wstring prefix=root+L"\\host-";
+    require(directory.size()==prefix.size()+32&&samePath(directory.substr(0,prefix.size()),prefix)&&directory.find_first_not_of(L"0123456789abcdef",prefix.size())==std::wstring::npos,"Refusing product copy outside this test's fresh protected host directory");
+    const std::wstring source=env(L"PROXY_GUI_EXE"),destination=directory+L"\\ProxyServer.exe";
+    require(!source.empty()&&!samePath(source,destination),"Actual production EXE path is absent or equals the installed destination");
+    ScHandle manager(OpenSCManagerW(nullptr,nullptr,SC_MANAGER_CONNECT));require(manager.value!=nullptr,"Cannot query SCM before product copy");
+    ScHandle service(OpenServiceW(manager.value,ServiceName,SERVICE_QUERY_STATUS));require(service.value!=nullptr,"Fresh test service disappeared before product copy");
+    SERVICE_STATUS_PROCESS status={};DWORD count=0;
+    require(QueryServiceStatusEx(service.value,SC_STATUS_PROCESS_INFO,reinterpret_cast<BYTE*>(&status),sizeof(status),&count)&&status.dwCurrentState==SERVICE_STOPPED&&status.dwProcessId==0,"Refusing product copy while the fresh test service is not stopped");
+    const std::string bytes=productBytes(source);protectedAcl(destination);
+    {
+        // Keep the protected destination file and its security descriptor. CopyFile
+        // can copy the source ACL on Windows, so replace bytes through this handle.
+        Handle file(CreateFileW(destination.c_str(),GENERIC_WRITE,0,nullptr,OPEN_EXISTING,FILE_FLAG_OPEN_REPARSE_POINT,nullptr));
+        require(file.value!=INVALID_HANDLE_VALUE,"Cannot open the fresh protected service executable");BY_HANDLE_FILE_INFORMATION information={};
+        require(GetFileInformationByHandle(file.value,&information)&&information.nNumberOfLinks==1&&!(information.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT)),"Fresh service executable is linked or is not a normal file");
+        count=0;require(WriteFile(file.value,bytes.data(),static_cast<DWORD>(bytes.size()),&count,nullptr)&&count==bytes.size()&&SetEndOfFile(file.value)&&FlushFileBuffers(file.value),"Cannot replace the fresh service executable with the actual product");
+    }
+    protectedAcl(destination);require(productBytes(destination)==bytes,"Installed product EXE differs from the MSVC build byte for byte");
+}
 struct FindWindowContext{DWORD process;HWND result;};
 BOOL CALLBACK findWindow(HWND window,LPARAM parameter){auto* c=reinterpret_cast<FindWindowContext*>(parameter);DWORD pid=0;GetWindowThreadProcessId(window,&pid);if(pid==c->process&&GetWindow(window,GW_OWNER)==nullptr&&IsWindowVisible(window)){c->result=window;return FALSE;}return TRUE;}
 bool captureOwnWindow(HWND window,DWORD expectedProcess){
@@ -331,7 +361,8 @@ int wmain(int argc,wchar_t** argv){
         require(!installedDirectory.empty()&&exists(installedDirectory+L"\\ProxyServer.exe"),"Protected service binary absent");
         protectedAcl(dataRoot);protectedAcl(installRoot);protectedAcl(installedDirectory);
         require(readFile(dataRoot+L"\\profile.dpapi").find(profile.proxy.password)==std::string::npos,"Protected profile contains plaintext password");
-        passed("protected install, stopped SCM state, DPAPI storage and directory ACLs");
+        installRealProduct(installedDirectory,installRoot);
+        passed("protected install, actual production EXE service host, stopped SCM state, DPAPI storage and ACLs");
         firewallRoundTrip(profile,installedDirectory,ports[2]);
         passed("real firewall COM apply, identical reapply, update and owned cleanup preserve all existing profiles/rules");
         requireApi(service_host::startService(error),"SCM start failed: ",error);

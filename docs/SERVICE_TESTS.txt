@@ -5,5 +5,5 @@ PASS service codec: 1078 assertions; bounded round trips, malformed input and se
 exit_code=0
 
 test_service_firewall
-service firewall plan: 76 assertions passed
+service firewall plan: 94 assertions passed
 exit_code=0

@@ -52,11 +52,12 @@
 
 ## CMake
 
-Для Windows доступен альтернативный `CMakeLists.txt`. Он собирает те же девять единиц и копирует `components`. На Linux собирается только переносимая утилита проверки конфигурации:
+Для Windows доступен альтернативный `CMakeLists.txt`. Он собирает те же девять единиц и копирует `components`. На Linux можно собрать переносимую утилиту проверки конфигурации и тесты кодека/плана брандмауэра:
 
 ```sh
 cmake -S . -B build -DPROXY_BUILD_TESTS=ON
 cmake --build build
+ctest --test-dir build --output-on-failure
 python3 tests/test_gost.py --gost /path/to/linux/gost --config-cli build/proxy_config_test
 ```
 

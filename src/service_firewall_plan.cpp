@@ -41,6 +41,26 @@ std::wstring hash(const std::wstring& s) {
 }
 std::wstring lowerAscii(std::wstring s) { for(wchar_t& c:s)if(c>=L'A'&&c<=L'Z')c+=L'a'-L'A';return s; }
 bool isLoopback(const std::string& ip) { return ip.compare(0,4,"127.")==0; }
+bool singleHostAddress(const std::wstring& text, std::uint32_t& result) {
+    const std::size_t slash=text.find(L'/');
+    if(slash!=std::wstring::npos) {
+        const std::wstring mask=text.substr(slash+1);
+        if(mask!=L"32"&&mask!=L"255.255.255.255")return false;
+    }
+    const std::size_t end=slash==std::wstring::npos?text.size():slash;
+    unsigned parts=0,value=0,digits=0;result=0;
+    for(std::size_t i=0;i<=end;++i) {
+        const wchar_t c=i==end?L'.':text[i];
+        if(c==L'.') {
+            if(!digits||value>255||parts>=4)return false;
+            result=(result<<8)|value;++parts;value=0;digits=0;
+        } else if(c>=L'0'&&c<=L'9') {
+            value=value*10+static_cast<unsigned>(c-L'0');
+            if(++digits>3)return false;
+        } else return false;
+    }
+    return parts==4;
+}
 std::wstring address(const std::string& ip) { return ip=="0.0.0.0"?L"*":wideAscii(ip); }
 void addRule(std::vector<Rule>& rules,const std::wstring& prefix,const std::wstring& kind,
              const std::wstring& program,int protocol,const std::wstring& ports,
@@ -53,6 +73,11 @@ void addRule(std::vector<Rule>& rules,const std::wstring& prefix,const std::wstr
 const wchar_t* groupName() { return L"Proxy Server 2.1 - managed service"; }
 const wchar_t* description() { return L"ProxyServer21 managed inbound rule v1; program and selected ports only."; }
 std::wstring installationPrefix(const std::wstring& directory) { return L"ProxyServer21."+hash(lowerAscii(normalPath(directory)))+L"."; }
+bool equivalentAddressScope(const std::wstring& actual,const std::wstring& expected) {
+    if(actual==L"*"||expected==L"*")return actual==expected;
+    std::uint32_t a=0,b=0;
+    return singleHostAddress(actual,a)&&singleHostAddress(expected,b)&&a==b;
+}
 bool makePlan(const proxy::Config& p,const mtproto::Config& mt,const std::wstring& installDirectory,
               bool includeMTProto,std::vector<Rule>& rules,std::string& error) {
     rules.clear();error.clear();

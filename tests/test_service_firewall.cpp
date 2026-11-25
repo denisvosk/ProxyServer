@@ -17,6 +17,29 @@ void rejected(proxy::Config p,const std::wstring& directory,const char* why){
 }
 }
 int main(){try{
+    struct AddressCase { const wchar_t* actual; const wchar_t* expected; bool equal; };
+    const AddressCase addresses[]={
+        {L"*",L"*",true},
+        {L"127.0.0.1",L"127.0.0.1",true},
+        {L"127.0.0.1/32",L"127.0.0.1",true},
+        {L"127.0.0.1/255.255.255.255",L"127.0.0.1",true},
+        {L"192.0.2.5/255.255.255.255",L"192.0.2.5",true},
+        {L"192.0.2.5",L"192.0.2.5/32",true},
+        {L"192.0.2.006/32",L"192.0.2.6",true},
+        {L"*",L"127.0.0.1",false},
+        {L"127.0.0.1/8",L"127.0.0.1",false},
+        {L"127.0.0.1/255.0.0.0",L"127.0.0.1",false},
+        {L"127.0.0.0-127.0.0.1",L"127.0.0.1",false},
+        {L"127.0.0.1,192.0.2.1",L"127.0.0.1",false},
+        {L"127.0.0.2/32",L"127.0.0.1",false},
+        {L"127.0.0.1/32/32",L"127.0.0.1",false},
+        {L"256.0.0.1",L"256.0.0.1",false},
+        {L"127.0.1",L"127.0.1",false},
+        {L"LocalSubnet",L"LocalSubnet",false},
+        {L"",L"",false},
+    };
+    for(const auto& a:addresses)
+        check(service_firewall::equivalentAddressScope(a.actual,a.expected)==a.equal,"COM single-host address normalization");
     proxy::Config p=configured();auto r=plan(p);
     check(r.size()==2,"default rule count");check(r[0].protocol==6,"TCP protocol");
     check(r[0].localPorts==L"1080,8080","only selected TCP ports");
