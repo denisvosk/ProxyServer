@@ -926,7 +926,8 @@ void applyTelegramProfile(const service_host::Profile& profile) {
 bool saveGuiPreferences(std::wstring& error) {
     if(!WritePrivateProfileStringW(L"proxy",L"close_to_tray",checked(CloseTray)?L"1":L"0",iniPath.c_str())){error=L"Не удалось сохранить поведение окна. "+systemError(GetLastError());return false;}
     if(!WritePrivateProfileStringW(L"proxy",L"tls_cert_name",getText(control(TlsCertHost)).c_str(),iniPath.c_str())){error=L"Не удалось сохранить имя для нового сертификата. "+systemError(GetLastError());return false;}
-    if(!WritePrivateProfileStringW(nullptr,nullptr,nullptr,iniPath.c_str())){error=L"Не удалось завершить сохранение параметров окна. "+systemError(GetLastError());return false;}
+    // Cache flush returns zero by design; the two actual writes above are checked.
+    WritePrivateProfileStringW(nullptr,nullptr,nullptr,iniPath.c_str());
     closeToTray=checked(CloseTray);return true;
 }
 void refreshServiceControls() {
